@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::create('urls', function (Blueprint $table) {
             $table->id();
-            $table->string('originalUrl');
+            $table->longText('originalUrl');
             $table->string('slug')->unique();
             $table->string('title')->nullable();
             $table->integer('click_count');
@@ -19,7 +19,7 @@ return new class extends Migration {
             $table->softDeletes();
             $table->timestamps();
 
-            $table->index(['slug', 'originalUrl']);
+            $table->index(['slug']);
         });
     }
 

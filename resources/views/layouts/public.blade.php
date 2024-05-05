@@ -13,6 +13,15 @@
     @livewireStyles
     <script async src="{{ Vite::asset('resources/js/ripple.js') }}"></script>
     @yield('styles')
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function () {
+                console.log('Async: Copying to clipboard was successful!');
+            }, function (err) {
+                console.error('Async: Could not copy text: ', err);
+            });
+        }
+    </script>
 </head>
 <body class="font-sans antialiased dark:bg-black bg-white dark:text-white/50">
     <div class="h-[100vh] min-w-full flex flex-col">

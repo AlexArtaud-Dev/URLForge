@@ -27,6 +27,10 @@ class ShortenForm extends Component
             'password' => 'nullable|string',
         ]);
 
+        // encrypt the password using bcrypt
+        if (!empty($validated['password'])) $validated['password'] = bcrypt($validated['password']);
+        else $validated['password'] = null;
+
         // create a new url with the validated data
         $url = UrlHelper::createNewShortUrl($validated['url'], $validated['slug'], $validated['maxVisit'], $validated['expirationDate'], $validated['password']);
         $url->save();

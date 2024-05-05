@@ -18,7 +18,7 @@
                 on any platform for free</p>
             <div class="flex flex-wrap -m-2">
                 <div class="w-full p-2 flex flex-row flex-wrap items-center gap-8 justify-center md:justify-start">
-                    <a href="/shorten"
+                    <a href="{{ route("shorten.index") }}"
                           class="cursor-pointer px-4 py-2.5 text-sm text-center text-white font-bold border-[#27dec0] border-2 hover:opacity-85 rounded-full">
                     SHORTEN
                     </a>

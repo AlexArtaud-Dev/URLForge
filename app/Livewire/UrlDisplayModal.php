@@ -4,7 +4,6 @@ namespace App\Livewire;
 
 use App\Helpers\UrlHelper;
 use Livewire\Component;
-use Masmerise\Toaster\Toaster;
 
 class UrlDisplayModal extends Component
 {
@@ -14,11 +13,13 @@ class UrlDisplayModal extends Component
 
     protected $listeners = ['displayUrlModal' => 'showModal'];
 
-    public function mount(bool $shouldKeepModalOpen = false, $url): void
+    public function mount(bool $shouldKeepModalOpen = false, $url = null): void
     {
         $this->shouldKeepModalOpen = $shouldKeepModalOpen;
-        $this->url = $url;
-        $this->qrCode = UrlHelper::generateQrCode(route("redirect",["slug" => $url['slug']]));
+        if ($shouldKeepModalOpen && !is_null($url)) {
+            $this->url = $url;
+            $this->qrCode = UrlHelper::generateQrCode(route("redirect",["slug" => $url['slug']]));
+        }
     }
 
     public function showModal($url): void
@@ -32,20 +33,9 @@ class UrlDisplayModal extends Component
         $this->reset(['url', 'qrCode']);
     }
 
-    public function copyShortUrlToClipboard(): void
-    {
-        Toaster::success('Short URL copied to clipboard.');
-        $this->dispatch('copyToClipboard', route("redirect",["slug" => $this->url['slug']]));
-    }
-
-    public function copyOriginalUrlToClipboard(): void
-    {
-        Toaster::success('Original URL copied to clipboard.');
-        $this->dispatch('copyToClipboard', [$this->url['originalUrl']]);
-    }
-
     public function render()
     {
-        return view('livewire.url-display-modal');
+        if ($this->shouldKeepModalOpen) return view('livewire.url-display-fixed');
+        else return view('livewire.url-display-modal');
     }
 }

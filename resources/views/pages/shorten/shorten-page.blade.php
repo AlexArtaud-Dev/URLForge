@@ -9,7 +9,7 @@
             <livewire:shorten-form />
         </div>
     </div>
-    <livewire:url-display-modal />
+    <livewire:url-display-modal :should-keep-modal-open="false" />
 @endsection
 
 @section("scripts")

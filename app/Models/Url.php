@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Url extends Model
@@ -25,5 +26,10 @@ class Url extends Model
         return [
             'expiration_date' => 'date',
         ];
+    }
+
+    public final function clickInfos() : HasMany
+    {
+        return $this->hasMany(ClickInfo::class);
     }
 }

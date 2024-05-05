@@ -7,6 +7,8 @@ use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\Image\ImagickImageBackEnd;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use BaconQrCode\Writer;
+use Carbon\Carbon;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class UrlHelper
 {
@@ -28,7 +30,7 @@ class UrlHelper
         return $slug;
     }
 
-    static function createNewShortUrl(string $url, string $slug, int $maxVisit, string $expirationDate, string $password): Url
+    static function createNewShortUrl(string $url, string $slug, int $maxVisit, string $expirationDate, $password): Url
     {
         return Url::create([
             'originalUrl' => $url,
@@ -43,12 +45,16 @@ class UrlHelper
 
     static function getOriginalUrlTitle(string $url): string
     {
-        $html = file_get_contents($url);
-        $doc = new \DOMDocument();
-        @$doc->loadHTML($html);
-        $title = $doc->getElementsByTagName("title");
+        try {
+            $html = file_get_contents($url);
+            $doc = new \DOMDocument();
+            $doc->loadHTML($html);
+            $title = $doc->getElementsByTagName("title");
 
-        return $title->length > 0 ? $title->item(0)->textContent : "";
+            return $title->length > 0 ? $title->item(0)->textContent : "";
+        } catch (\Exception $e) {
+            return "";
+        }
     }
 
     static function generateRandomSlug(int $length = 3): string
@@ -73,5 +79,22 @@ class UrlHelper
         $writer = new Writer($renderer);
 
         return base64_encode($writer->writeString($url));
+    }
+
+    static function needPassword(Url $url): bool
+    {
+        return !empty($url->password);
+    }
+
+    static function checkPassword(Url $url, string $password): bool
+    {
+        return $url->password === $password;
+    }
+
+    static function redirectTo(Url $url): RedirectResponse
+    {
+        $url->increment('click_count');
+        $url->save();
+        return redirect()->away($url->originalUrl);
     }
 }
